@@ -6,19 +6,32 @@
 
     <groupId>com.lethanh98.performance</groupId>
     <artifactId>tps-performance</artifactId>
-    <version>1.0${type-app}</version>
-    <url>https://github.com/solitarysp/tps-performance</url>
+    <version>1.0</version>
+    <packaging>jar</packaging>
     <name>tps-performance</name>
-    <licenses>
+    <description>project using for test performance</description>
+
+    <url>https://github.com/solitarysp/tps-performance</url>
+    <scm>
+        <connection>scm:git:git://github.com/solitarysp/tps-performance.git</connection>
+        <url>https://github.com/solitarysp/tps-performance</url>
+    </scm>
+
+     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <properties>
-        <type-app></type-app>
+    <developers>
+        <developer>
+            <name>Le Van Thanh</name>
+            <email>lethanh9398@gmail.com</email>
+        </developer>
+    </developers>
 
+    <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
@@ -63,9 +76,6 @@
         </profile>
         <profile>
             <id>deploy-snapshots</id>
-            <properties>
-                <type-app>-SNAPSHOT</type-app>
-            </properties>
         </profile>
     </profiles>
 
@@ -124,5 +134,16 @@
         </plugins>
     </reporting>
 
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 </project>
