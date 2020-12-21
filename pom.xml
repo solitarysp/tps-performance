@@ -130,6 +130,9 @@
                         <goals>
                             <goal>sign</goal>
                         </goals>
+                        <configuration>
+                            <keyname>486D5652787D85E1</keyname>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
