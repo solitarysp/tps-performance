@@ -20,21 +20,40 @@ public class TpsCounter {
     @Setter
     private NextCounter nextCounter;
 
-
+    /**
+     * @param name        Name of TpsCounter
+     * @param duration    Time reset Default MILLISECONDS
+     * @param nextCounter callback when nextCounter
+     */
     public TpsCounter(String name, long duration, NextCounter nextCounter) {
         this(name, duration, TimeUnit.MILLISECONDS);
         this.nextCounter = nextCounter;
     }
 
+    /**
+     * @param name        Name of TpsCounter
+     * @param duration    Time reset
+     * @param timeUnit    Type time duration
+     * @param nextCounter callback when nextCounter
+     */
     public TpsCounter(String name, long duration, TimeUnit timeUnit, NextCounter nextCounter) {
         this(name, duration, timeUnit);
         this.nextCounter = nextCounter;
     }
 
+    /**
+     * @param name     Name of TpsCounter
+     * @param duration Time reset Default MILLISECONDS
+     */
     public TpsCounter(String name, long duration) {
         this(name, duration, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * @param name     Name of TpsCounter
+     * @param duration Time reset
+     * @param timeUnit Type time duration
+     */
     public TpsCounter(String name, long duration, TimeUnit timeUnit) {
         this.name = name;
         tps = new LongAdder();
@@ -50,10 +69,22 @@ public class TpsCounter {
         }, 0, timeUnit.toMillis(duration));
     }
 
+    /**
+     * Add increment tps
+     */
     public void addTps() {
-        tps.increment();
+        this.increment();
     }
 
+    /**
+     * Add increment tps
+     */
+    public void increment() {
+        tps.increment();
+    }
+    /**
+     * Get cur tps
+     */
     public long getTps() {
         return tps.longValue();
     }

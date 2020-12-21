@@ -16,31 +16,62 @@ public class GroupTpsCounter {
     @Getter
     private String groupName;
 
+    /**
+     * @param groupName   name group
+     * @param tpsCounters list tpsCounters
+     * @param nextCounter callback for nextCounter
+     */
     public GroupTpsCounter(String groupName, List<TpsCounter> tpsCounters, NextCounter nextCounter) {
         this(groupName, tpsCounters);
         addNextCounter(nextCounter);
     }
 
+    /**
+     * @param groupName   name group
+     * @param nextCounter callback for nextCounter
+     * @param tpsCounters list tpsCounters
+     */
     public GroupTpsCounter(String groupName, NextCounter nextCounter, TpsCounter... tpsCounters) {
         this(groupName, Arrays.asList(tpsCounters));
         addNextCounter(nextCounter);
     }
 
+    /**
+     * @param groupName   name group
+     * @param tpsCounters list tpsCounters
+     */
     public GroupTpsCounter(String groupName, TpsCounter... tpsCounters) {
         this(groupName, Arrays.asList(tpsCounters));
     }
 
+    /**
+     * @param groupName   name group
+     * @param tpsCounters list tpsCounters
+     */
     public GroupTpsCounter(String groupName, List<TpsCounter> tpsCounters) {
         counterList.addAll(tpsCounters);
         this.groupName = groupName;
     }
 
+    /**
+     * Add callback for all counter
+     *
+     * @param next
+     */
     private void addNextCounter(NextCounter next) {
         counterList.forEach(tpsCounter -> tpsCounter.setNextCounter(next));
     }
 
+    /**
+     * Add tps for list counter
+     */
     public void addTps() {
+        this.increment();
+    }
+
+    public void increment() {
         counterList.forEach(TpsCounter::addTps);
+
     }
 
     public String toStringCounter() {
