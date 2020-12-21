@@ -6,9 +6,12 @@
     \---lethanh98
         \---performance
             \---tps
+                    \---functional
+                        NextCounter
                     GroupTpsCounter.java # Khai báo 1 group counter
                     TpsCounter.java # Nơi khai báo tạo một tps counter
                     Utils.java
+                    
 ```
 
 ### Nguyên lý hoạt động
