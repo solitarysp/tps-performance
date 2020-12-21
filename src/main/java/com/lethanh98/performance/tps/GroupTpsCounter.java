@@ -1,6 +1,7 @@
 package com.lethanh98.performance.tps;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.lethanh98.performance.tps.functional.NextCounter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,13 +16,27 @@ public class GroupTpsCounter {
     @Getter
     private String groupName;
 
+    public GroupTpsCounter(String groupName, List<TpsCounter> tpsCounters, NextCounter nextCounter) {
+        this(groupName, tpsCounters);
+        addNextCounter(nextCounter);
+    }
+
+    public GroupTpsCounter(String groupName, NextCounter nextCounter, TpsCounter... tpsCounters) {
+        this(groupName, Arrays.asList(tpsCounters));
+        addNextCounter(nextCounter);
+    }
+
+    public GroupTpsCounter(String groupName, TpsCounter... tpsCounters) {
+        this(groupName, Arrays.asList(tpsCounters));
+    }
+
     public GroupTpsCounter(String groupName, List<TpsCounter> tpsCounters) {
         counterList.addAll(tpsCounters);
         this.groupName = groupName;
     }
 
-    public GroupTpsCounter(String groupName, TpsCounter... tpsCounters) {
-        this(groupName, Arrays.asList(tpsCounters));
+    private void addNextCounter(NextCounter next) {
+        counterList.forEach(tpsCounter -> tpsCounter.setNextCounter(next));
     }
 
     public void addTps() {
