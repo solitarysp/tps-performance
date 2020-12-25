@@ -2,7 +2,7 @@ package com.lethanh98.performance.tps.time;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lethanh98.performance.tps.Utils;
-import com.lethanh98.performance.tps.functional.NextCounter;
+import com.lethanh98.performance.tps.time.functional.NextTimeCounter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,32 +14,33 @@ import java.util.concurrent.atomic.LongAdder;
 
 @Slf4j
 public class TpsTimeCounter {
-    private final LongAdder tps;
+    private final LongAdder totalTime;
+    private final LongAdder count;
     private final Timer timer = new Timer();
     @Getter
     private final String name;
     @Setter
-    private NextCounter nextCounter;
+    private NextTimeCounter nextTimeCounter;
 
     /**
      * @param name        Name of TpsTimeCounter
      * @param duration    Time reset Default MILLISECONDS
-     * @param nextCounter callback when nextCounter
+     * @param nextTimeCounter callback when nextCounter
      */
-    public TpsTimeCounter(String name, long duration, NextCounter nextCounter) {
+    public TpsTimeCounter(String name, long duration, NextTimeCounter nextTimeCounter) {
         this(name, duration, TimeUnit.MILLISECONDS);
-        this.nextCounter = nextCounter;
+        this.nextTimeCounter = nextTimeCounter;
     }
 
     /**
      * @param name        Name of TpsTimeCounter
      * @param duration    Time reset
      * @param timeUnit    Type time duration
-     * @param nextCounter callback when nextCounter
+     * @param nextTimeCounter callback when nextCounter
      */
-    public TpsTimeCounter(String name, long duration, TimeUnit timeUnit, NextCounter nextCounter) {
+    public TpsTimeCounter(String name, long duration, TimeUnit timeUnit, NextTimeCounter nextTimeCounter) {
         this(name, duration, timeUnit);
-        this.nextCounter = nextCounter;
+        this.nextTimeCounter = nextTimeCounter;
     }
 
     /**
@@ -57,15 +58,17 @@ public class TpsTimeCounter {
      */
     public TpsTimeCounter(String name, long duration, TimeUnit timeUnit) {
         this.name = name;
-        tps = new LongAdder();
+        totalTime = new LongAdder();
+        count = new LongAdder();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (nextCounter != null) {
-                    nextCounter.onNext(name, tps.longValue());
+                if (nextTimeCounter != null) {
+                    nextTimeCounter.onNext(name, totalTime.longValue(),count.longValue());
                 }
                 log.debug("reset {}", name);
-                tps.reset();
+                totalTime.reset();
+                count.reset();
             }
         }, 0, timeUnit.toMillis(duration));
     }
@@ -81,13 +84,18 @@ public class TpsTimeCounter {
      * Add increment tps
      */
     public void add(long x) {
-        tps.add(x);
+        totalTime.add(x);
+        count.increment();
     }
     /**
      * Get cur tps
      */
-    public long getTps() {
-        return tps.longValue();
+    public long getTotalTime() {
+        return totalTime.longValue();
+    }
+
+    public long getTotalCount() {
+        return count.longValue();
     }
 
     @Override

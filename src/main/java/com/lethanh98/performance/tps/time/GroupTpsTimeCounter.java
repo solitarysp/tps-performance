@@ -3,6 +3,7 @@ package com.lethanh98.performance.tps.time;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lethanh98.performance.tps.Utils;
 import com.lethanh98.performance.tps.functional.NextCounter;
+import com.lethanh98.performance.tps.time.functional.NextTimeCounter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +23,7 @@ public class GroupTpsTimeCounter {
      * @param tpsTimeCounters list tpsTimeCounters
      * @param nextCounter     callback for nextCounter
      */
-    public GroupTpsTimeCounter(String groupName, List<TpsTimeCounter> tpsTimeCounters, NextCounter nextCounter) {
+    public GroupTpsTimeCounter(String groupName, List<TpsTimeCounter> tpsTimeCounters, NextTimeCounter nextCounter) {
         this(groupName, tpsTimeCounters);
         addNextCounter(nextCounter);
     }
@@ -32,7 +33,7 @@ public class GroupTpsTimeCounter {
      * @param nextCounter     callback for nextCounter
      * @param tpsTimeCounters list tpsTimeCounters
      */
-    public GroupTpsTimeCounter(String groupName, NextCounter nextCounter, TpsTimeCounter... tpsTimeCounters) {
+    public GroupTpsTimeCounter(String groupName, NextTimeCounter nextCounter, TpsTimeCounter... tpsTimeCounters) {
         this(groupName, Arrays.asList(tpsTimeCounters));
         addNextCounter(nextCounter);
     }
@@ -59,8 +60,8 @@ public class GroupTpsTimeCounter {
      *
      * @param next
      */
-    private void addNextCounter(NextCounter next) {
-        counterList.forEach(tpsTimeCounter -> tpsTimeCounter.setNextCounter(next));
+    private void addNextCounter(NextTimeCounter next) {
+        counterList.forEach(tpsTimeCounter -> tpsTimeCounter.setNextTimeCounter(next));
     }
 
     /**

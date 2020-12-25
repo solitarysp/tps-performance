@@ -14,8 +14,8 @@ public class MainTestSingleton {
     public void testTps() throws InterruptedException {
         TpsTimeCounter tpsCounter = new TpsTimeCounter("Tps/5s", 5, TimeUnit.SECONDS);
         TpsTimeCounter tpsCounter2 = new TpsTimeCounter("Tps/10s", 10, TimeUnit.SECONDS);
-        GroupTpsTimeCounter tpsCounters = new GroupTpsTimeCounter("TPS MainTestGroup", (name, counter) -> {
-            log.info("New Start {} , ola counter {}", name, counter);
+        GroupTpsTimeCounter tpsCounters = new GroupTpsTimeCounter("TPS MainTestGroup", (name, counterTime, count) -> {
+            log.info("New Start {} , ola counter time {} and count {}", name, counterTime, count);
         }, tpsCounter, tpsCounter2);
 
         while (true) {

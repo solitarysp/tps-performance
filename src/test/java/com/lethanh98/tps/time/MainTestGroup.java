@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class MainTestGroup {
     @Test
     public void testTps() {
-        TpsTimeCounter tpsCounter = new TpsTimeCounter("Tps/5s", 5, TimeUnit.SECONDS,(name, counter) -> {
-            log.info("{}",counter);
+        TpsTimeCounter tpsCounter = new TpsTimeCounter("Tps/5s", 5, TimeUnit.SECONDS,(name, counterTime,count) -> {
+            log.info("{} : {}",counterTime,count);
         });
         int number = new Random().nextInt(20);
         log.info("Number: {}", number);
