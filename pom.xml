@@ -6,7 +6,7 @@
 
     <groupId>com.lethanh98.performance</groupId>
     <artifactId>tps-performance</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <name>tps-performance</name>
     <description>project using for test performance</description>
