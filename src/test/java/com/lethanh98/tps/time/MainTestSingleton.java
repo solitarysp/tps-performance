@@ -18,14 +18,18 @@ public class MainTestSingleton {
             log.info("New Start {} , ola counter time {} and count {}", name, counterTime, count);
         }, tpsCounter, tpsCounter2);
 
-        while (true) {
-            int number = new Random().nextInt(20);
-            log.info("Number: {}", number);
-            for (int i = 0; i < 5; i++) {
-                tpsCounters.addTps(1000);
-            }
-            Thread.sleep(5000);
-        }
+        int number = new Random().nextInt(50)+20;
+        log.info("Number: {}", number);
 
+        for (int i = 0; i < number; i++) {
+            int time = new Random().nextInt(2000) + 200;
+            tpsCounter.addTps(time);
+            try {
+                Thread.sleep(time);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Thread.sleep(2000);
     }
 }
