@@ -59,7 +59,7 @@ public class GroupTpsCounter {
      * @param next
      */
     private void addNextCounter(NextCounter next) {
-        counterList.forEach(tpsCounter -> tpsCounter.setNextCounter(next));
+        counterList.forEach(tpsCounter -> tpsCounter.addNextCounter(next));
     }
 
     /**
