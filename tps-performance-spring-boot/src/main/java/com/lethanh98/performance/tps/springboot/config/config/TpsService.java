@@ -18,73 +18,74 @@ import org.springframework.scheduling.annotation.Async;
 @Configuration
 @Slf4j
 public class TpsService {
-    @Autowired
-    TpsConfigProperties tpsConfigProperties;
-    @Getter
-    Map<String, TpsCounter> singleton = new ConcurrentHashMap<>();
-    @Getter
-    Map<String, GroupTpsCounter> multiple = new ConcurrentHashMap<>();
 
-    @Async("threadPoolAddTpsCount")
-    public void addTps(TpsTraceAspect tpsTraceAspect) {
-        try {
-            if (!tpsTraceAspect.isMultiple()) {
-                TpsCounter tpsCounter = getSingleton().get(tpsTraceAspect.name());
-                if (Objects.nonNull(tpsCounter)) {
-                    tpsCounter.addTps();
-                } else {
-                    log.warn("Tps not found {}", tpsTraceAspect.name());
-                }
-            } else {
-                GroupTpsCounter groupTpsCounter = getMultiple().get(tpsTraceAspect.name());
-                if(Objects.nonNull(groupTpsCounter)){
-                    groupTpsCounter.addTps();
-                }else {
-                    log.warn("Tps not found group {}", tpsTraceAspect.name());
-                }
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+  @Getter
+  Map<String, TpsCounter> singleton = new ConcurrentHashMap<>();
+  @Getter
+  Map<String, GroupTpsCounter> multiple = new ConcurrentHashMap<>();
+
+  @Async("threadPoolAddTpsCount")
+  public void addTps(TpsTraceAspect tpsTraceAspect) {
+    try {
+      if (!tpsTraceAspect.isMultiple()) {
+        TpsCounter tpsCounter = getSingleton().get(tpsTraceAspect.name());
+        if (Objects.nonNull(tpsCounter)) {
+          tpsCounter.addTps();
+        } else {
+          log.warn("Tps not found {}", tpsTraceAspect.name());
         }
-    }
-
-    @Autowired
-    private void initSingleton() {
-        if (Objects.nonNull(tpsConfigProperties)) {
-            tpsConfigProperties.getSingletonConfig().entrySet().forEach(stringTpsConfigEntry -> {
-                TpsCounter tpsCounter = new TpsCounter(
-                        stringTpsConfigEntry.getKey(),
-                        stringTpsConfigEntry.getValue().getDuration(),
-                        stringTpsConfigEntry.getValue().getTimeUnit(), (s, l) -> {
-                    long seconds = stringTpsConfigEntry.getValue().getTimeUnit().toSeconds(stringTpsConfigEntry.getValue().getDuration());
-                    long tps = l / seconds;
-                    log.info(stringTpsConfigEntry.getValue().getMsg().replace("%tps%", String.valueOf(tps > 0 ? tps : 0)).replace("%total%", String.valueOf(l)));
-                });
-                singleton.put(tpsCounter.getName(), tpsCounter);
-            });
+      } else {
+        GroupTpsCounter groupTpsCounter = getMultiple().get(tpsTraceAspect.name());
+        if (Objects.nonNull(groupTpsCounter)) {
+          groupTpsCounter.addTps();
+        } else {
+          log.warn("Tps not found group {}", tpsTraceAspect.name());
         }
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
     }
+  }
 
-    @Autowired
-    private void initMultiple() {
-        if (Objects.nonNull(tpsConfigProperties)) {
-            tpsConfigProperties.getMultipleConfig().entrySet().forEach(multipleTpsConfigEntry -> {
-                List<TpsCounter> tpsCounters = new ArrayList<>();
+  @Autowired
+  private void initSingleton(TpsConfigProperties tpsConfigProperties) {
+    tpsConfigProperties.getSingletonConfig().entrySet().forEach(stringTpsConfigEntry -> {
+      TpsCounter tpsCounter = new TpsCounter(
+          stringTpsConfigEntry.getKey(),
+          stringTpsConfigEntry.getValue().getDuration(),
+          stringTpsConfigEntry.getValue().getTimeUnit(), (s, l) -> {
+        long seconds = stringTpsConfigEntry.getValue().getTimeUnit()
+            .toSeconds(stringTpsConfigEntry.getValue().getDuration());
+        long tps = l / seconds;
+        log.info(stringTpsConfigEntry.getValue().getMsg()
+            .replace("%tps%", String.valueOf(tps > 0 ? tps : 0))
+            .replace("%total%", String.valueOf(l)));
+      });
+      singleton.put(tpsCounter.getName(), tpsCounter);
+    });
+  }
 
-                multipleTpsConfigEntry.getValue().getTpsConfigs().forEach(stringTpsConfigEntry -> {
-                    TpsCounter tpsCounter = new TpsCounter(
-                            stringTpsConfigEntry.getName(),
-                            stringTpsConfigEntry.getDuration(),
-                            stringTpsConfigEntry.getTimeUnit(), (s, l) -> {
-                        long seconds = stringTpsConfigEntry.getTimeUnit().toSeconds(stringTpsConfigEntry.getDuration());
-                        long tps = l / seconds;
-                        log.info(stringTpsConfigEntry.getMsg().replace("%tps%", String.valueOf(tps > 0 ? tps : 0)).replace("%total%", String.valueOf(l)));
-                    });
-                    tpsCounters.add(tpsCounter);
-                });
-                GroupTpsCounter groupTpsCounter = new GroupTpsCounter(multipleTpsConfigEntry.getKey(), tpsCounters);
-                multiple.put(multipleTpsConfigEntry.getKey(), groupTpsCounter);
-            });
-        }
-    }
+  @Autowired
+  private void initMultiple(TpsConfigProperties tpsConfigProperties) {
+    tpsConfigProperties.getMultipleConfig().entrySet().forEach(multipleTpsConfigEntry -> {
+      List<TpsCounter> tpsCounters = new ArrayList<>();
+
+      multipleTpsConfigEntry.getValue().getTpsConfigs().forEach(stringTpsConfigEntry -> {
+        TpsCounter tpsCounter = new TpsCounter(
+            stringTpsConfigEntry.getName(),
+            stringTpsConfigEntry.getDuration(),
+            stringTpsConfigEntry.getTimeUnit(), (s, l) -> {
+          long seconds = stringTpsConfigEntry.getTimeUnit()
+              .toSeconds(stringTpsConfigEntry.getDuration());
+          long tps = l / seconds;
+          log.info(stringTpsConfigEntry.getMsg().replace("%tps%", String.valueOf(tps > 0 ? tps : 0))
+              .replace("%total%", String.valueOf(l)));
+        });
+        tpsCounters.add(tpsCounter);
+      });
+      GroupTpsCounter groupTpsCounter = new GroupTpsCounter(multipleTpsConfigEntry.getKey(),
+          tpsCounters);
+      multiple.put(multipleTpsConfigEntry.getKey(), groupTpsCounter);
+    });
+  }
 }
