@@ -2,48 +2,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <parent>
-    <groupId>com.lethanh98.performance</groupId>
     <artifactId>tps-performance</artifactId>
+    <groupId>com.lethanh98.performance</groupId>
     <version>1.3</version>
   </parent>
-
-  <artifactId>tps-performance-core</artifactId>
   <modelVersion>4.0.0</modelVersion>
 
-  <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  <artifactId>tps-performance-spring-boot</artifactId>
 
-  <name>tps-performance-core</name>
-  <description>project using for test performance</description>
+  <version>1.0</version>
 
-  <url>https://github.com/solitarysp/tps-performance</url>
-  <scm>
-    <connection>scm:git:git://github.com/solitarysp/tps-performance.git</connection>
-    <url>https://github.com/solitarysp/tps-performance</url>
-  </scm>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>Le Van Thanh</name>
-      <email>lethanh9398@gmail.com</email>
-    </developer>
-  </developers>
   <dependencies>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -51,26 +50,17 @@
       <optional>true</optional>
       <scope>compile</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/log4j/log4j -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>com.lethanh98.performance</groupId>
+      <artifactId>tps-performance-core</artifactId>
+      <version>${tps.performance.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!--Test-->
-    <!-- https://mvnrepository.com/artifact/junit/junit -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-
   <profiles>
     <profile>
       <id>deploy-releases</id>
@@ -152,7 +142,6 @@
       </plugin>
     </plugins>
   </reporting>
-
   <distributionManagement>
     <snapshotRepository>
       <id>sonatype-nexus-snapshots</id>
